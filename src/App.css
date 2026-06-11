@@ -310,6 +310,28 @@
 .theme-btn:hover  { background: var(--bg-btn-hover); color: var(--accent); border-color: var(--accent); }
 .theme-btn.active { background: var(--accent); color: var(--accent-dark); border-color: var(--accent); }
 
+/* ===== Target Presets ===== */
+.preset-switcher {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.preset-btn {
+  flex: 1;
+  background: var(--bg-btn);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  padding: 0.35rem 0.2rem;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.preset-btn:hover  { background: var(--bg-btn-hover); color: var(--accent); border-color: var(--accent); }
+.preset-btn.active { background: var(--accent); color: var(--accent-dark); border-color: var(--accent); }
+
 /* ===== Target Time ===== */
 .target-value {
   font-size: 1.05rem;

@@ -3,6 +3,12 @@ import './App.css'
 
 const DEFAULT_TARGET = 3 * 60
 
+const PRESETS = [
+  { label: '30초', seconds: 30 },
+  { label: '1분', seconds: 60 },
+  { label: '3분', seconds: 180 },
+]
+
 function formatTime(ms) {
   const totalSeconds = Math.floor(ms / 1000)
   const minutes = Math.floor(totalSeconds / 60)
@@ -45,7 +51,7 @@ export default function App() {
   const containerRef = useRef(null)
   const settingsRef = useRef(null)
 
-  const tick = useCallback(() => {
+  const tick = useCallback(function tickFrame() {
     const now = Date.now()
     const newElapsed = now - startTimeRef.current + elapsedRef.current
     setElapsed(newElapsed)
@@ -72,7 +78,7 @@ export default function App() {
       }
     }
 
-    rafRef.current = requestAnimationFrame(tick)
+    rafRef.current = requestAnimationFrame(tickFrame)
   }, [targetSeconds])
 
   const stopRaf = () => {
@@ -136,6 +142,15 @@ export default function App() {
     setEditingTarget(true)
   }
 
+  const applyTarget = (total) => {
+    setTargetSeconds(total)
+    setWarning(false)
+    setFinished(false)
+    setOvertime(false)
+    warningFiredRef.current = false
+    overtimeFiredRef.current = false
+  }
+
   const handleTargetSave = () => {
     const parts = targetInput.split(':')
     if (parts.length === 2) {
@@ -143,14 +158,14 @@ export default function App() {
       const s = parseInt(parts[1], 10) || 0
       const total = m * 60 + s
       if (total > 0) {
-        setTargetSeconds(total)
-        setWarning(false)
-        setFinished(false)
-        setOvertime(false)
-        warningFiredRef.current = false
-        overtimeFiredRef.current = false
+        applyTarget(total)
       }
     }
+    setEditingTarget(false)
+  }
+
+  const handlePreset = (seconds) => {
+    applyTarget(seconds)
     setEditingTarget(false)
   }
 
@@ -262,6 +277,15 @@ export default function App() {
                   <div className="settings-divider" />
 
                   <p className="settings-section-title">목표 시간</p>
+                  <div className="preset-switcher">
+                    {PRESETS.map(preset => (
+                      <button
+                        key={preset.seconds}
+                        className={`preset-btn${targetSeconds === preset.seconds ? ' active' : ''}`}
+                        onClick={() => handlePreset(preset.seconds)}
+                      >★ {preset.label}</button>
+                    ))}
+                  </div>
                   <div className="settings-row">
                     {editingTarget ? (
                       <>
